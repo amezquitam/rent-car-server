@@ -12,6 +12,19 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(DateCollisionException.class)
+    public ResponseEntity<ErrorDetails> handleNotAbleToDeleteException(DateCollisionException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST.name()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorDetails> handleNotAbleToDeleteException(DataIntegrityViolationException exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
